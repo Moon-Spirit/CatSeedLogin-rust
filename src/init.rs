@@ -16,14 +16,14 @@ pub async fn initialize_plugin(server: Arc<Context>) -> Result<(), String> {
     
     // 创建登录命令树
     let login_tree = CommandTree::new(["login"], "Login command")
-       .then(literal("login").execute(Login(Login)));
+       .then(literal("login").execute(Login));
        
     // 创建注册命令树
     let register_tree = CommandTree::new(["register"], "Register command")
-       .then(literal("register").execute(Register(Register)));
+       .then(literal("register").execute(Register));
        
     // 创建修改密码命令树
     let changepassword_tree = CommandTree::new(["changepassword"], "Change password command")
-       .then(literal("changepassword").execute(Changepassword(Changepassword)));
+       .then(literal("changepassword").execute(Changepassword));
     Ok(())
 }
