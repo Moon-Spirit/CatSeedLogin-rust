@@ -40,10 +40,14 @@ jobs:
       id: get-commit-info
       shell: bash
       run: |
-        # 获取最近一次提交信息
-        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+        # 获取最近一次提交信息，并处理换行符和特殊字符
+        COMMIT_MESSAGE=$(git log -1 --pretty=%B | tr '\n' ' ' | sed 's/"/\\"/g' | sed 's/`/\\`/g')
         echo "最近一次提交信息: $COMMIT_MESSAGE"
-        echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_OUTPUT
+        
+        # 使用环境文件设置输出，避免特殊字符问题
+        echo "commit_message<<EOF" >> $GITHUB_OUTPUT
+        echo "$COMMIT_MESSAGE" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
   build:
     name: Build for ${{ matrix.os }}
@@ -162,10 +166,6 @@ jobs:
         echo "- **提交**: ${GITHUB_SHA:0:7}" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
-        echo "## 🔧 更新内容" >> $GITHUB_STEP_SUMMARY
-        echo "基于最近一次提交: $COMMIT_MESSAGE" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        
         echo "## 📦 下载链接" >> $GITHUB_STEP_SUMMARY
         echo "构件已上传至 GitHub Actions Artifacts，可在右侧「Artifacts」区域下载：" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -203,10 +203,3 @@ jobs:
         # 同时输出到日志
         echo "构建完成: CatSeedLogin v${VERSION}"
         echo "最近一次提交: ${COMMIT_MESSAGE}"
-
-    - name: Upload summary as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-summary-v${{ needs.get-version.outputs.version }}
-        path: $GITHUB_STEP_SUMMARY
-        retention-days: 30
