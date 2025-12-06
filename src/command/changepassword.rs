@@ -1,23 +1,23 @@
-use async_trait::async_trait;
 use pumpkin::{
     command::{ 
-        args::ConsumedArgs, dispatcher::CommandError, tree::builder::literal, tree::CommandTree,
-        CommandExecutor, CommandSender,
+        args::ConsumedArgs, dispatcher::CommandError,
+        CommandExecutor, CommandResult, CommandSender,
     },
-    plugin::{player::player_join::PlayerJoinEvent, Context, EventHandler, EventPriority},
     server::Server,
 };
 
 pub struct Changepassword; 
 
-#[async_trait] 
 impl CommandExecutor for Changepassword {
-    async fn execute<'a>(
-        &self,
-        _sender: &mut CommandSender,
-        _: &Server,
-        _: &ConsumedArgs<'a>,
-    ) -> Result<(), CommandError> {
-        Ok(())
+    fn execute<'a>(
+        &'a self,
+        _sender: &'a CommandSender,
+        _: &'a Server,
+        _: &'a ConsumedArgs<'a>,
+    ) -> CommandResult<'a> {
+        Box::pin(async move {
+            println!("密码修改成功");
+            Ok(())
+        })
     }
 }

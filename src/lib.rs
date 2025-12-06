@@ -2,8 +2,6 @@ mod command;
 mod event;
 mod init;
 
-// 保留必要的导入
-use pumpkin_protocol::ConnectionState::Login as ProtocolLogin;
 use std::sync::Arc;
 use pumpkin_api_macros::{plugin_impl, plugin_method};
 use pumpkin::plugin::Context;
